@@ -1,0 +1,182 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "My User Project CRUD",
+      "description": "My User Project Application API",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:5000",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Users",
+        "description": "API for users in the system"
+      }
+    ],
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/users": {
+        "put": {
+            "tags": [
+              "Users"
+            ],
+            "description": "Change data user in system",
+            "parameters": [
+              {
+                "name": "user",
+                "in": "body",
+                "description": "User that we want to create",
+                "schema": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "responses": {
+              "200": {
+                "description": "New user is created",
+                "schema": {
+                    "type": "boolean"
+                }
+              }
+            }
+          },
+        "post": {
+          "tags": [
+            "Users"
+          ],
+          "description": "Create new user in system",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "description": "User that we want to create",
+              "schema": {
+                "$ref": "#/definitions/CreateUser"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "New user is created",
+              "schema": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "get": {
+            "tags": [
+              "Users"
+            ],
+            "summary": "Get all users in system",
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "$ref": "#/definitions/Users"
+                }
+              }
+            }
+          } 
+      },
+      "/users/{id}": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of user that we want to find",
+            "type": "integer"
+          }
+        ],
+        "delete": {
+          "summary": "Delete user with given ID",
+          "tags": [
+            "Users"
+          ],
+          "responses": {
+            "200": {
+              "description": "User is deleted",
+              "schema": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "get": {
+            "summary": "Get user with given ID",
+            "tags": [
+              "Users"
+            ],
+            "responses": {
+              "200": {
+                "description": "User is deleted",
+                "schema": {
+                    "$ref": "#/definitions/User"
+                }
+              }
+            }
+          }       
+      }
+    },
+    "definitions": {
+        "User": {
+          "required": [
+            "id",
+            "name",
+            "course"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "uniqueItems": true
+            },
+            "name": {
+              "type": "string"
+            },
+            "course": {
+                "type": "integer"
+            }
+           
+          }
+        },
+        "CreateUser": {
+            "required": [
+              "name",
+              "course"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "course": {
+                  "type": "integer"
+              }
+             
+            }
+          },
+        "Users": {
+          "type": "array",
+          "$ref": "#/definitions/User"
+        }
+       
+      }
+}

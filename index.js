@@ -1,24 +1,30 @@
 const PORT = process.env.PORT || 5000;
 
+
 const express = require("express");
 const app = express();
-const UserMapper = require('./src/core/user-mapping');
-const UserDatabaseService = require('./src/core/services/student-service');
+const UserMapper = require('./core/user-mapping');
+const UserDatabaseService = require('./core/services/student-service');
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json())
+
+const swaggerUi = require('swagger-ui-express'),
+    swaggerDocument = require('./swagger.json');
 
 const dbservice = new UserDatabaseService();
 
-
 app.get("/users", async (req, res) => {
     const allUsers = await dbservice.getUsersFromDatabase();
-    res.send(allUsers);
+    res.json(allUsers);
 });
 
 app.get("/users/:id", async (req, res) => {
     const allUsers = await dbservice.getUsersFromDatabase();
-    res.send(allUsers.find(x=> x.id == req.params.id));
+    res.json(allUsers.find(x=> x.id == req.params.id));
 });
 
-app.post("/users/:id", async (req, res) => {
+app.post("/users", async (req, res) => {
     const newUser = req.body;
     const allUsers = await dbservice.getUsersFromDatabase();
     
@@ -29,10 +35,10 @@ app.post("/users/:id", async (req, res) => {
 
     await dbservice.writeUsersToDatabase(allUsers);
 
-    res.send(newId);
+    res.json(newId);
 });
 
-app.put("/users/:id", async (req, res) => {
+app.put("/users", async (req, res) => {
     const allUsers = await dbservice.getUsersFromDatabase();
     const user = allUsers.find(x => x.id === req.body.id);
     if (user == null) {
@@ -41,14 +47,17 @@ app.put("/users/:id", async (req, res) => {
     
     UserMapper.mapUserToUserDTO(user, req.body);
 
-    res.send(await dbservice.writeUsersToDatabase(allUsers));
+    await dbservice.writeUsersToDatabase(allUsers)
+
+    res.json(true);
 });
 
 app.delete("/users/:id", async (req, res) => {
     const allUsers = await dbservice.getUsersFromDatabase();
     await dbservice.writeUsersToDatabase(allUsers.filter(x => x.id != req.params.id));
-    res.send(true);
+    res.json(true);
 });
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`))
