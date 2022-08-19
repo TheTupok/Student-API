@@ -9,6 +9,9 @@ module.exports = class UserDatabaseService {
             if(err){
                 return rejects(err.message)
             }
+            if(data == ''){
+                return resolve([])
+            }
             resolve(JSON.parse(data))
         }))
     }
