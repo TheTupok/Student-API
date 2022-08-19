@@ -1,19 +1,21 @@
-const users = [
-    {id: 1, name: 'Anatoly'},
-    {id: 2, name: 'Alex'},
-]
+const dbService = require('../core/services/student-service')
 
-const getUsers = (req, res) => {
-    if(req.params.id) {
-        return res.send(users.find(user => user.id == req.params.id))
-    }
-    res.send(users);
+const dbservice = new dbService();
+
+
+const getUsers = async (req, res) => {
+    const allUsers = await dbservice.getUsersFromDatabase();
+    res.send(allUsers);
 }
 
-const createUser = (req, res) => {
-    const user = req.body
-    users.push(user)
-    res.send(users);
+const createUser = async (req, res) => {
+    const newUser = req.body
+    const allUser = await dbservice.getUsersFromDatabase();
+
+    allUser.push(newUser)
+
+    const WriteTo = await dbservice.writeUsersToDatabase(getAllUser);
+    res.send(WriteTo);
 }
 
 module.exports = {

@@ -1,15 +1,25 @@
+const fs = require('fs')
+const path = require('path')
 
 module.exports = class UserDatabaseService {
-    constructor() {
+    _pathDatabase = path.resolve('database/users.json')
 
-    }
-
-    getUsers() {
-        
+    getUsersFromDatabase() {
+        return new Promise((resolve, rejects) => fs.readFile(this._pathDatabase, {encoding: 'utf-8'}, (err, data) =>{
+            if(err){
+                return rejects(err.message)
+            }
+            resolve(JSON.parse(data))
+        }))
     }
     
-    writeUsers(users) {
-
+    writeUsersToDatabase(users) {
+        return new Promise((resolve, rejects) => fs.writeFile(this._pathDatabase, JSON.stringify(users, null, 4), (err) =>{
+            if(err){
+                return rejects(err.message)
+            }   
+            resolve()
+        }))
     }
 }
 
