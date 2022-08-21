@@ -6,6 +6,10 @@ server project with node and express. This server can get, get by ID, add, modif
 
 is used to handle all routes
 
+# core/services/student-service.js
+
+working with JSON file (reading and writing)
+
 # database/user.json
 
 JSON is used as a database
