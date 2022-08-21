@@ -1,6 +1,14 @@
 # Student-API 
 
-Server project with node and express to create api's
+server project with node and express. This server can get, get by ID, add, modify and delete users. 
+
+# index.js
+
+is used to handle all routes
+
+# database/user.json
+
+JSON is used as a database
 
 # How to start the server
 
