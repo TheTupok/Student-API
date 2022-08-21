@@ -1,4 +1,6 @@
-# Server project with node and express to create api's
+# Student-API 
+
+Server project with node and express to create api's
 
 # How to start the server
 
