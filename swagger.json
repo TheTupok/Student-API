@@ -1,56 +1,55 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0.0",
-      "title": "My User Project CRUD",
-      "description": "My User Project Application API",
-      "license": {
-        "name": "MIT",
-        "url": "https://opensource.org/licenses/MIT"
-      }
-    },
-    "host": "localhost:5000",
-    "basePath": "/",
-    "tags": [
-      {
-        "name": "Users",
-        "description": "API for users in the system"
-      }
-    ],
-    "schemes": [
-      "http"
-    ],
-    "consumes": [
-      "application/json"
-    ],
-    "produces": [
-      "application/json"
-    ],
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Students.API",
+    "version": "1.0"
+  },
     "paths": {
       "/users": {
         "put": {
             "tags": [
               "Users"
             ],
-            "description": "Change data user in system",
-            "parameters": [
-              {
-                "name": "user",
-                "in": "body",
-                "description": "User that we want to create",
-                "schema": {
-                  "$ref": "#/definitions/User"
+            "summary": "Update student.",
+            "operationId": "UpdateStudent",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                },
+                "application/*+json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 }
               }
-            ],
-            "produces": [
-              "application/json"
-            ],
+            },
             "responses": {
               "200": {
-                "description": "New user is created",
-                "schema": {
-                    "type": "boolean"
+                "description": "Success",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "boolean"
+                    }
+                  },
+                  "application/json": {
+                    "schema": {
+                      "type": "boolean"
+                    }
+                  },
+                  "text/json": {
+                    "schema": {
+                      "type": "boolean"
+                    }
+                  }
                 }
               }
             }
@@ -59,25 +58,46 @@
           "tags": [
             "Users"
           ],
-          "description": "Create new user in system",
-          "parameters": [
-            {
-              "name": "user",
-              "in": "body",
-              "description": "User that we want to create",
-              "schema": {
-                "$ref": "#/definitions/CreateUser"
+          "summary": "Create student.",
+          "operationId": "CreateStudent",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUser"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUser"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUser"
+                }
               }
             }
-          ],
-          "produces": [
-            "application/json"
-          ],
+          },
           "responses": {
             "200": {
-              "description": "New user is created",
-              "schema": {
-                "type": "integer"
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "integer"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "integer"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
@@ -86,68 +106,133 @@
             "tags": [
               "Users"
             ],
-            "summary": "Get all users in system",
+            "summary": "Get student.",
+            "operationId": "GetStudents",
             "responses": {
               "200": {
-                "description": "OK",
-                "schema": {
-                  "$ref": "#/definitions/Users"
+                "description": "Success",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  },
+                  "application/json": {
+                    "schema": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  },
+                  "text/json": {
+                    "schema": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
                 }
               }
             }
           } 
       },
       "/users/{id}": {
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID of user that we want to find",
-            "type": "integer"
-          }
-        ],
         "delete": {
-          "summary": "Delete user with given ID",
           "tags": [
             "Users"
           ],
+          "summary": "Delete student with given ID",
+          "operationId": "DeleteStudentById",
+          "parameters" : [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
           "responses": {
             "200": {
-              "description": "User is deleted",
-              "schema": {
-                "type": "boolean"
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                }
               }
             }
           }
         },
         "get": {
-            "summary": "Get user with given ID",
-            "tags": [
-              "Users"
-            ],
-            "responses": {
-              "200": {
-                "description": "User is deleted",
-                "schema": {
-                    "$ref": "#/definitions/User"
+          "tags": [
+            "Users"
+          ],
+          "summary": "Get user by ID",
+          "operationId": "GetStudentById",
+          "parameters" : [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 }
               }
             }
-          }       
+          }
+        }       
       }
     },
-    "definitions": {
+    "components": {
+      "schemas": {
         "User": {
-          "required": [
-            "id",
-            "name",
-            "course"
-          ],
+          "type": "object",
           "properties": {
             "id": {
               "type": "integer",
-              "uniqueItems": true
+              "uniqueItems": true,
+              "nullable": false
             },
             "name": {
               "type": "string"
@@ -155,14 +240,10 @@
             "course": {
                 "type": "integer"
             }
-           
           }
         },
         "CreateUser": {
-            "required": [
-              "name",
-              "course"
-            ],
+          "type": "object",
             "properties": {
               "name": {
                 "type": "string"
@@ -172,11 +253,7 @@
               }
              
             }
-          },
-        "Users": {
-          "type": "array",
-          "$ref": "#/definitions/User"
-        }
-       
+          }
       }
+    }    
 }

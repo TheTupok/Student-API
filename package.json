@@ -1,30 +1,60 @@
 {
 
   "name": "nodejs",
+
   "version": "1.0.0",
+
   "description": "nodeJs learn",
+
   "main": "index.js",
+
   "scripts": {
+
     "start": "nodemon index.js"
+
   },
+
   "keywords": [
+
     "node",
+
     "nodeJS"
+
   ],
+
   "author": "Anatoly Tereshonok <ter.tolya@mail.ru>",
+
   "license": "ISC",
+
   "dependencies": {
+
     "body-parser": "^1.19.0",
+
+    "cors": "^2.8.5",
+
     "cross-env": "^7.0.3",
+
     "dotenv": "^16.0.1",
+
     "express": "^4.17.1",
+
     "swagger-ui-express": "^4.1.4"
-  },    
+
+  },
+
   "devDependencies": {
+
     "babel-cli": "^6.26.0",
+
     "babel-core": "^6.26.3",
+
     "babel-loader": "^8.1.0",
+
     "babel-preset-env": "^1.7.0",
+
     "nodemon": "^2.0.4"
+
   }
+
 }
+
