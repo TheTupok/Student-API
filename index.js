@@ -19,18 +19,30 @@ const dbservice = new UserDatabaseService();
 
 app.get('/users', async (req, res) => {
   const allUsers = await dbservice.getUsersFromDatabase();
-  res.json(allUsers);
+  if (req.query['filter']) {
+    const searchTerm = req.query['filter'].toLowerCase();
+
+    const filteredUser = allUsers.filter(
+      user =>
+        user?.name?.toLowerCase().includes(searchTerm) ||
+        user?.group?.toLowerCase().includes(searchTerm) ||
+        user?.course?.toLowerCase().includes(searchTerm)
+    );
+    res.json(filteredUser);
+  } else {
+    res.json(allUsers);
+  }
+});
+
+app.get('/users/:id', async (req, res) => {
+  const allUsers = await dbservice.getUsersFromDatabase();
+  res.json(allUsers.find(x => x.id == req.params.id));
 });
 
 app.get('/swagger-json', (req, res) => {
   fs.readFile('./swagger.json', { encoding: 'utf-8' }, (err, data) => {
     res.end(data);
   });
-});
-
-app.get('/users/:id', async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase();
-  res.json(allUsers.find(x => x.id == req.params.id));
 });
 
 app.post('/users', async (req, res) => {

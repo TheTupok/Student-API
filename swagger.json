@@ -107,7 +107,7 @@
               "Users"
             ],
             "summary": "Get student.",
-            "operationId": "GetStudents",
+            "operationId": "GetAlltudents",
             "responses": {
               "200": {
                 "description": "Success",
@@ -139,7 +139,57 @@
                 }
               }
             }
-          } 
+          }           
+      },
+      "/users/?": {
+        "get": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "Get filtered student.",
+          "operationId": "GetFilteredStudents",
+          "parameters" : [
+            {
+              "name": "filter",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "/users/{id}": {
         "delete": {
