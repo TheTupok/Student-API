@@ -107,7 +107,7 @@
               "Users"
             ],
             "summary": "Get student.",
-            "operationId": "GetAlltudents",
+            "operationId": "GetAllStudents",
             "responses": {
               "200": {
                 "description": "Success",
