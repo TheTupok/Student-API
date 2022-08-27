@@ -101,45 +101,7 @@
               }
             }
           }
-        },
-        "get": {
-            "tags": [
-              "Users"
-            ],
-            "summary": "Get student.",
-            "operationId": "GetAllStudents",
-            "responses": {
-              "200": {
-                "description": "Success",
-                "content": {
-                  "text/plain": {
-                    "schema": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/User"
-                      }
-                    }
-                  },
-                  "application/json": {
-                    "schema": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/User"
-                      }
-                    }
-                  },
-                  "text/json": {
-                    "schema": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/User"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }           
+        }              
       },
       "/users/?": {
         "get": {
@@ -147,12 +109,12 @@
             "Users"
           ],
           "summary": "Get filtered student.",
-          "operationId": "GetFilteredStudents",
-          "parameters" : [
+          "operationId": "GetAllStudents",
+          "parameters" : [ 
             {
               "name": "filter",
               "in": "query",
-              "required": true,
+              "required": false,
               "schema": {
                 "type": "string"
               }
@@ -288,7 +250,10 @@
               "type": "string"
             },
             "course": {
-                "type": "integer"
+                "type": "string"
+            },
+            "group": {
+              "type": "string"
             }
           }
         },
@@ -299,9 +264,11 @@
                 "type": "string"
               },
               "course": {
-                  "type": "integer"
+                  "type": "string"
+              },
+              "group": {
+                "type": "string"
               }
-             
             }
           }
       }

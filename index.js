@@ -6,7 +6,7 @@ const UserMapper = require('./core/user-mapping');
 const UserDatabaseService = require('./core/services/student-service');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-var cors = require('cors');
+const cors = require('cors');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
