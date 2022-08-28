@@ -234,7 +234,57 @@
             }
           }
         }       
-      }
+      },
+      "/auth": {
+        "post": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "User authentication.",
+          "operationId": "LoginUser",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUser"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUser"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUser"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }  
+      }      
     },
     "components": {
       "schemas": {
@@ -267,6 +317,17 @@
                   "type": "string"
               },
               "group": {
+                "type": "string"
+              }
+            }
+          },
+          "AuthUser": {
+            "type": "object",
+            "properties": {
+              "login": {
+                "type": "string"
+              },
+              "password": {
                 "type": "string"
               }
             }
