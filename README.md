@@ -2,19 +2,15 @@
 
 server project with node and express. This server can get, get by ID, add, modify and delete users. 
 
-# index.js
-
-is used to handle all routes
-
-# core/services/student-service.js
-
-working with JSON file (reading and writing)
-
-# database/user.json
-
-JSON is used as a database
-
 # How to start the server
 
 <p>npm install, npm run start. Open browser url http://localhost:5000 </p>
 <p>Url to go to the swagger page http://localhost:5000/api-docs </p>
+
+# Server implementation
+
+Used Express for restapi. Swagger was used to generate templates and methods for the client (swagger.json). Used JWT token to implement login and check if the user can use any requests. To work with files, the standard fs node js was used
+
+# Architecture
+
+index.js contains the main body of the server. database folder contains users and registered users. file handling is in core/services/student-services.js
