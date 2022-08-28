@@ -1,35 +1,9 @@
 [
     {
-        "name": "123",
-        "group": "512",
-        "course": "5",
-        "id": 1
-    },
-    {
-        "name": "123",
-        "group": "512",
-        "course": "5",
-        "id": 1
-    },
-    {
-        "name": "123",
-        "group": "512",
-        "course": "5",
-        "id": 1
-    },
-    {
-        "id": 2
-    },
-    {
-        "name": "",
-        "group": "",
-        "course": "",
-        "id": 3
-    },
-    {
-        "name": "",
-        "group": "",
-        "course": "",
-        "id": 4
+        "id": 1,
+        "course": "2",
+        "group": "sdq",
+        "name": "123sd",
+        "lastModificationHash": "h7dK6PGP8EzxshBeSNar"
     }
 ]

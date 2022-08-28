@@ -5,11 +5,16 @@ const app = express();
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const cors = require('cors');
+const path = require('path');
 const jsonwebtoken = require('jsonwebtoken');
+const randomString = require('randomstring');
 
 const UserMapper = require('./core/user-mapping');
 const UserDatabaseService = require('./core/services/student-service');
 const UserCredentials = require('./database/UserCredentials.json');
+
+const _pathDatabaseUser = path.resolve('./database/users.json');
+const _pathOperationsLogs = path.resolve('./database/operationsLogs.json');
 
 const JWT_SECRET = '1a2b-3c4d-5e6f-7g8h';
 
@@ -35,7 +40,7 @@ const swaggerUi = require('swagger-ui-express'),
 const dbservice = new UserDatabaseService();
 
 app.get('/users', async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase();
+  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
   if (req.query['filter']) {
     const searchTerm = req.query['filter'].toLowerCase();
 
@@ -52,7 +57,7 @@ app.get('/users', async (req, res) => {
 });
 
 app.get('/users/:id', async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase();
+  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
   res.json(allUsers.find(x => x.id == req.params.id));
 });
 
@@ -62,16 +67,17 @@ app.get('/swagger-json', (req, res) => {
   });
 });
 
-app.post('/users', authenticateToken, async (req, res) => {
+app.post('/users', async (req, res) => {
   const newUser = req.body;
-  const allUsers = await dbservice.getUsersFromDatabase();
+  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
+  newUser['lastModificationHash'] = randomString.generate(20);
 
   const newId = Math.max(0, ...allUsers.map(x => x.id)) + 1;
 
   req.body['id'] = newId;
   allUsers.push(newUser);
 
-  await dbservice.writeUsersToDatabase(allUsers);
+  await dbservice.writeUsersToDatabase(_pathDatabaseUser, allUsers);
 
   res.json(newId);
 });
@@ -92,23 +98,28 @@ app.post('/auth', (req, res) => {
     .json({ message: 'The username and password your provided are invalid' });
 });
 
-app.put('/users', authenticateToken, async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase();
+app.put('/users', async (req, res) => {
+  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
   const user = allUsers.find(x => x.id === req.body.id);
   if (user == null) {
     return console.log(`id:${req.body.id} - does not exist`);
   }
+  if (user['lastModificationHash'] === req.body['lastModificationHash']) {
+    UserMapper.mapUserToUserDTO(user, req.body);
+    user['lastModificationHash'] = randomString.generate(20);
 
-  UserMapper.mapUserToUserDTO(user, req.body);
+    await dbservice.writeUsersToDatabase(_pathDatabaseUser, allUsers);
 
-  await dbservice.writeUsersToDatabase(allUsers);
-
-  res.json(true);
+    res.json(true);
+  } else {
+    res.json(false);
+  }
 });
 
-app.delete('/users/:id', authenticateToken, async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase();
+app.delete('/users/:id', async (req, res) => {
+  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
   await dbservice.writeUsersToDatabase(
+    _pathDatabaseUser,
     allUsers.filter(x => x.id != req.params.id)
   );
   res.json(true);

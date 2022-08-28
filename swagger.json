@@ -16,17 +16,17 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/CreateUser"
                   }
                 },
                 "text/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/CreateUser"
                   }
                 },
                 "application/*+json": {
                   "schema": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/CreateUser"
                   }
                 }
               }
@@ -303,6 +303,9 @@
                 "type": "string"
             },
             "group": {
+              "type": "string"
+            },
+            "lastModificationHash": {
               "type": "string"
             }
           }
