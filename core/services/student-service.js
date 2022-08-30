@@ -1,9 +1,11 @@
 const fs = require('fs');
+const path = require('path');
+const _pathDatabaseUser = path.resolve('./database/users.json');
 
 module.exports = class UserDatabaseService {
-  getUsersFromDatabase(path) {
+  getUsersFromDatabase() {
     return new Promise((resolve, rejects) =>
-      fs.readFile(path, { encoding: 'utf-8' }, (err, data) => {
+      fs.readFile(_pathDatabaseUser, { encoding: 'utf-8' }, (err, data) => {
         if (err) {
           return rejects(err.message);
         }
@@ -15,9 +17,9 @@ module.exports = class UserDatabaseService {
     );
   }
 
-  writeUsersToDatabase(path, users) {
+  writeUsersToDatabase(users) {
     return new Promise((resolve, rejects) =>
-      fs.writeFile(path, JSON.stringify(users, null, 4), err => {
+      fs.writeFile(_pathDatabaseUser, JSON.stringify(users, null, 4), err => {
         if (err) {
           return rejects(err.message);
         }

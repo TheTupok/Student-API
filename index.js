@@ -5,16 +5,13 @@ const app = express();
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const cors = require('cors');
-const path = require('path');
 const jsonwebtoken = require('jsonwebtoken');
 const randomString = require('randomstring');
 
 const UserMapper = require('./core/user-mapping');
 const UserDatabaseService = require('./core/services/student-service');
+const dataChangeLogsService = require('./core/services/dataChangeLogs-service');
 const UserCredentials = require('./database/UserCredentials.json');
-
-const _pathDatabaseUser = path.resolve('./database/users.json');
-const _pathOperationsLogs = path.resolve('./database/operationsLogs.json');
 
 const JWT_SECRET = '1a2b-3c4d-5e6f-7g8h';
 
@@ -38,9 +35,50 @@ const swaggerUi = require('swagger-ui-express'),
   swaggerDocument = require('./swagger.json');
 
 const dbservice = new UserDatabaseService();
+const changeservice = new dataChangeLogsService();
+
+app.get('/undo/:id', async (req, res) => {
+  const allLogs = await changeservice.getChangedData();
+  const log = allLogs.find(x => x.id == req.params.id);
+  if (log == null) return res.json(`Id:${req.params.id} not found`);
+  if (log['canceled'])
+    return res.json(`Id:${log['id']} has already been returned`);
+
+  if (log['reqType'] == 'deleteUser') {
+    const newUser = log['oldObject'];
+    const allUsers = await dbservice.getUsersFromDatabase();
+    allUsers.push(newUser);
+
+    await dbservice.writeUsersToDatabase(allUsers);
+
+    log['canceled'] = true;
+    await changeservice.updateChangedData(allLogs);
+  }
+
+  if (log['reqType'] == 'createUser') {
+    const allUsers = await dbservice.getUsersFromDatabase();
+    await dbservice.writeUsersToDatabase(
+      allUsers.filter(x => x.id != log['newObject']['id'])
+    );
+
+    log['canceled'] = true;
+    await changeservice.updateChangedData(allLogs);
+  }
+
+  if (log['reqType'] == 'updateUser') {
+    const allUsers = await dbservice.getUsersFromDatabase();
+    const user = allUsers.find(x => x.id === log['newObject']['id']);
+    UserMapper.mapUserToUserDTO(user, log['oldObject']);
+
+    log['canceled'] = true;
+    await changeservice.updateChangedData(allLogs);
+    await dbservice.writeUsersToDatabase(allUsers);
+  }
+  return res.json(`Successful return id:${req.params.id} request`);
+});
 
 app.get('/users', async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
+  const allUsers = await dbservice.getUsersFromDatabase();
   if (req.query['filter']) {
     const searchTerm = req.query['filter'].toLowerCase();
 
@@ -57,7 +95,7 @@ app.get('/users', async (req, res) => {
 });
 
 app.get('/users/:id', async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
+  const allUsers = await dbservice.getUsersFromDatabase();
   res.json(allUsers.find(x => x.id == req.params.id));
 });
 
@@ -69,7 +107,7 @@ app.get('/swagger-json', (req, res) => {
 
 app.post('/users', async (req, res) => {
   const newUser = req.body;
-  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
+  const allUsers = await dbservice.getUsersFromDatabase();
   newUser['lastModificationHash'] = randomString.generate(20);
 
   const newId = Math.max(0, ...allUsers.map(x => x.id)) + 1;
@@ -77,7 +115,8 @@ app.post('/users', async (req, res) => {
   req.body['id'] = newId;
   allUsers.push(newUser);
 
-  await dbservice.writeUsersToDatabase(_pathDatabaseUser, allUsers);
+  await dbservice.writeUsersToDatabase(allUsers);
+  changeservice.writeChangedData('createUser', null, newUser);
 
   res.json(newId);
 });
@@ -99,8 +138,9 @@ app.post('/auth', (req, res) => {
 });
 
 app.put('/users', async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
+  const allUsers = await dbservice.getUsersFromDatabase();
   const user = allUsers.find(x => x.id === req.body.id);
+  const oldUser = Object.assign({}, user);
   if (user == null) {
     return console.log(`id:${req.body.id} - does not exist`);
   }
@@ -108,20 +148,22 @@ app.put('/users', async (req, res) => {
     UserMapper.mapUserToUserDTO(user, req.body);
     user['lastModificationHash'] = randomString.generate(20);
 
-    await dbservice.writeUsersToDatabase(_pathDatabaseUser, allUsers);
+    await dbservice.writeUsersToDatabase(allUsers);
 
+    changeservice.writeChangedData('updateUser', oldUser, user);
     res.json(true);
   } else {
-    res.json(false);
+    res.json(`Old hash, update data`);
   }
 });
 
 app.delete('/users/:id', async (req, res) => {
-  const allUsers = await dbservice.getUsersFromDatabase(_pathDatabaseUser);
+  const allUsers = await dbservice.getUsersFromDatabase();
+  const deleteUser = allUsers.find(x => x.id == req.params.id);
   await dbservice.writeUsersToDatabase(
-    _pathDatabaseUser,
     allUsers.filter(x => x.id != req.params.id)
   );
+  changeservice.writeChangedData('deleteUser', deleteUser, null);
   res.json(true);
 });
 
