@@ -9,7 +9,7 @@ server project with node and express. This server can get, get by ID, add, modif
 
 # Server implementation
 
-Used Express for restapi. Swagger was used to generate templates and methods for the client (swagger.json). Used JWT token to implement login and check if the user can use any requests. To work with files, the standard fs node js was used. 
+Used Express for restapi. Swagger was used to generate templates and methods for the client (swagger.json). Used JWT token to implement login and check if the user can use any requests. To work with files, the standard fs node js was used. It is also possible to use undo redo operations, the logs are in database/dataChangedLogs.json
 
 # Working with users through a hash
 
